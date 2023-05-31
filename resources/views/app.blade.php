@@ -14,6 +14,11 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 
         <!-- Scripts -->
+        <!-- Yandex Map -->
+        <script src="https://api-maps.yandex.ru/2.1/?apikey=9a2b8ed8-161a-4324-882c-c76cfdf2357c&lang=ru_RU"
+                type="text/javascript">
+        </script>
+
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
         @inertiaHead

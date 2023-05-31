@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -68,4 +69,25 @@ class User extends Authenticatable
     {
         return $this->hasMany(Vote::class);
     }
+
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    public function locations(): HasMany
+    {
+        return $this->hasMany(Location::class);
+    }
+
+    public function latestLocations(): HasMany
+    {
+        return $this->hasMany(Location::class)->latest();
+    }
+
+    public function favoriteRegions(): BelongsToMany
+    {
+        return $this->belongsToMany(Region::class, 'favorite_region_user', 'user_id', 'favorite_region_id');
+    }
+
 }
