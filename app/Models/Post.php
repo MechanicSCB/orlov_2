@@ -45,6 +45,11 @@ class Post extends Model
             ->latest('published_at');
     }
 
+    public function photos(): HasMany
+    {
+        return $this->hasMany(Photo::class);
+    }
+
     public function allComments(): HasMany
     {
         return $this->hasMany(Comment::class);

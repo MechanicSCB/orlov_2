@@ -47,7 +47,7 @@ class PostController extends Controller
 
     public function show(Post $post): Response|ResponseFactory
     {
-        $post->load(['user', 'comments', 'videos'])
+        $post->load(['user', 'comments', 'videos', 'photos'])
             ->loadCount('allComments')
             ->loadSum('votes', 'value')
         ;
@@ -117,7 +117,7 @@ class PostController extends Controller
             // Save uploaded photos
             $photoPath = $photo->storePublicly('post-photos', ['disk' => 'public']);
 
-            Photo::create([
+            Photo::query()->create([
                 'path' => $photoPath,
                 'post_id' => $post->id,
                 'user_id' => auth()->id(),
