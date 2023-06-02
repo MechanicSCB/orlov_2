@@ -3,7 +3,9 @@
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\RegionController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;

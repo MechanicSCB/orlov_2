@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Post;
-// use App\Models\Rating;
+use App\Models\Rating;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class VoteController extends Controller
 {
-    public function vote(Request $request)
+    public function vote(Request $request): RedirectResponse
     {
         if(! auth()->user()){
             return back()->with('error', 'Только зарегистрированные пользователи могут ставить оценки.');
@@ -27,16 +28,16 @@ class VoteController extends Controller
         $vote = $model->vote($request['value']);
 
         // Increase/Decrease post/comment author's rating
-        // Rating::create([
-        //     'value' => $request['value'] * Rating::VoteAward,
-        //     'user_id' => $model->user_id,
-        //     'vote_id' => $vote->id,
-        // ]);
+        Rating::create([
+            'value' => $request['value'] * Rating::VoteAward,
+            'user_id' => $model->user_id,
+            'vote_id' => $vote->id,
+        ]);
 
         return back();
     }
 
-    public function unvote(Request $request)
+    public function unvote(Request $request): RedirectResponse
     {
         if ($request['modelType'] === 'Post') {
             $model = Post::findOrFail($request['modelId']);

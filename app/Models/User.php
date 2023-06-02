@@ -6,6 +6,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -65,14 +67,43 @@ class User extends Authenticatable
         'votes'
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($user) {
+            $user->ratings()->create([
+                'value' => Rating::RegistrationInitialAward,
+                'user_id' => $user->id,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->created_at,
+            ]);
+        });
+    }
+
     public function votes(): HasMany
     {
         return $this->hasMany(Vote::class);
     }
 
+    public function votedPosts(): MorphToMany
+    {
+        return $this->morphedByMany(Post::class, 'votable', 'votes');
+    }
+
     public function ratings(): HasMany
     {
         return $this->hasMany(Rating::class);
+    }
+
+    public function monthRatings(): HasMany
+    {
+        return $this->hasMany(Rating::class)->where('created_at','>', now()->startOfMonth());
+    }
+
+    public function weekRatings(): HasMany
+    {
+        return $this->hasMany(Rating::class)->where('created_at','>', now()->startOfWeek());
     }
 
     public function locations(): HasMany
@@ -90,4 +121,23 @@ class User extends Authenticatable
         return $this->belongsToMany(Region::class, 'favorite_region_user', 'user_id', 'favorite_region_id');
     }
 
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function latestComments(): HasMany
+    {
+        return $this->hasMany(Comment::class)->latest();
+    }
+
+    public function reservedAccident(): HasOne
+    {
+        return $this->hasOne(Accident::class, 'reserved_by');
+    }
 }

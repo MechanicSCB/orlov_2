@@ -13,6 +13,11 @@
         <!-- Icons -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 
+        <!-- SUMMERNOTE -->
+        <script src="{{ asset('plugins/jquery-3.4.1.slim.min.js') }}"></script>
+        <link href="{{ asset('plugins/summernote-0.8.18-dist/summernote-lite_orig.css') }}" rel="stylesheet">
+        <script src="{{ asset('plugins/summernote-0.8.18-dist/summernote-lite.min.js') }}"></script>
+
         <!-- Scripts -->
         <!-- Yandex Map -->
         <script src="https://api-maps.yandex.ru/2.1/?apikey=9a2b8ed8-161a-4324-882c-c76cfdf2357c&lang=ru_RU"
