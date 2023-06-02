@@ -12,6 +12,9 @@ class PhotoSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $posts = json_decode(file_get_contents(database_path('seeders/data/posts.json')), 1);
+        dd(tmr(),$posts);
+
+
     }
 }

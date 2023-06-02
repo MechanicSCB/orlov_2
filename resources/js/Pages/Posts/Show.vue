@@ -50,7 +50,7 @@ function submit() {
 
         <!-- Photos -->
         <div class="mb-3" v-for="photo in post.photos">
-            <img class="max-h-[500px]" :src="'/storage/' + photo.path" alt="">
+            <img class="max-h-[500px]" :src="photo.path" alt="">
         </div>
 
         <!-- Comments Count -->
@@ -89,6 +89,12 @@ function submit() {
     </div>
 </template>
 <style>
+iframe.video-adaptive {
+    width: 640px;
+    max-width: 100%;
+    height: 360px;
+}
+
 #post-text p {
     margin-bottom: 1rem;
 }

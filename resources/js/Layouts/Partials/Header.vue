@@ -60,7 +60,7 @@ const showingNavigationDropdown = ref(false);
                 </p>
                 <p class="text-center underline">
                     <Link class="text-2xl no-underline" :href="route('location.create')">Помочь</Link><br>
-                    <Link class="text-sm no-underline" href="">Зачем это надо?</Link>
+                    <Link class="text-sm no-underline" :href="route('posts.show', 'ocifrovka')">Зачем это надо?</Link>
                 </p>
                 <p>
                     На данный момент проставлено<br>
@@ -84,7 +84,7 @@ const showingNavigationDropdown = ref(false);
                 <div class="mt-1 flex items-center">
                     <div class="text-sm">
                         <p>Проект</p>
-                        <a class="underline" href="">Василия Орлова</a>
+                        <a class="underline" href="/">Василия Орлова</a>
                     </div>
                     <div class="ml-3 w-9">
                         <img class="rounded-full" src="/img/avatar_50.jpg" alt="">

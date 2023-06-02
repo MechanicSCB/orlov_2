@@ -16,7 +16,7 @@ defineProps({
                 <span class="ml-2 text-xs">{{ member.name }}</span>
             </Link>
             <div class="text-sm flex">
-                <Link class="w-5/6 hover:underline" :href="route('posts.show', comment.post) + '#comment-' + comment.id">{{ comment.body }}</Link>
+                <Link class="w-5/6 hover:underline" :href="route('posts.show', comment.post) + '#comment-' + comment.id" v-html="comment.body"/>
                 <div class="w-1/6 text-right"><span class="bg-[#f0f0f0] px-2 py-1 font-semibold" :class="comment.votes_sum_value > 0 ? 'text-[#28a745]': comment.votes_sum_value < 0 ? 'text-red-500': 'font-normal'">{{ comment.votes_sum_value ?? 0 }}</span></div>
             </div>
             <Link :href="route('posts.show', comment.post)" class="text-sm font-bold hover:underline">{{ comment.post.title }} <i class="bi bi-chevron-right"></i></Link>

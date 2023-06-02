@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Classes\VideoHandler;
 use App\Http\Requests\PostRequest;
+use App\Models\Comment;
 use App\Models\Photo;
 use App\Models\Post;
+use App\Models\User;
 use App\Models\Video;
 use Database\Seeders\PostSeeder;
 use Illuminate\Http\Request;
@@ -17,17 +19,26 @@ class PostController extends Controller
 {
     public function home(Request $request): Response|ResponseFactory
     {
-        $posts = Post::query()
-            ->withCount('allComments')
-            ->where('is_users_post', 1)
-            ->with('user')
-            ->latest('published_at')
-            ->paginate(12)
-        ;
+        // (new PostSeeder())->run();
+        // dd(tmr(),77);
 
-        return inertia('Posts/Index', [
-            'posts' => $posts,
-        ]);
+        $comments = Comment::with('user:id,name,profile_photo_path', 'post:id,title,slug')->latest()->take(5)->get();
+        $posts = Post::with('user:id,name,profile_photo_path')->withCount('allComments')->latest('published_at')->take(3)->get();
+
+        // TODO try to avoid code duplicating here
+        $users = User::query()
+            ->select(['id', 'name', 'profile_photo_path'])
+            ->whereHas('ratings')
+            ->withSum('ratings as rating', 'value')
+            ->withSum('monthRatings as monthRating', 'value')
+            ->withSum('weekRatings as weekRating', 'value')
+            ->get();
+
+        $weekBestUsers = $users->sortByDesc('weekRating')->where('weekRating', '>', 0)->take(5)->values();
+        $monthBestUsers = $users->sortByDesc('monthRating')->where('monthRating', '>', 0)->take(5)->values();
+        $bestUsers = $users->sortByDesc('rating')->take(5)->values();
+
+        return inertia('Home', compact('comments', 'posts', 'weekBestUsers', 'monthBestUsers', 'bestUsers'));
     }
 
     public function index(Request $request): Response|ResponseFactory
@@ -118,7 +129,7 @@ class PostController extends Controller
             $photoPath = $photo->storePublicly('post-photos', ['disk' => 'public']);
 
             Photo::query()->create([
-                'path' => $photoPath,
+                'path' => '/storage/' . $photoPath,
                 'post_id' => $post->id,
                 'user_id' => auth()->id(),
             ]);
@@ -151,5 +162,4 @@ class PostController extends Controller
 
         return redirect(route('posts.index'))->withSuccess('deleted!');
     }
-
 }
