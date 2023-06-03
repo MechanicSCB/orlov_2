@@ -16,6 +16,7 @@ const props = defineProps({
 const form = useForm({
     _method: 'PUT',
     name: props.user.name,
+    about: props.user.about,
     email: props.user.email,
     photo: null,
 });
@@ -78,11 +79,11 @@ const clearPhotoFileInput = () => {
 <template>
     <FormSection @submitted="updateProfileInformation">
         <template #title>
-            Profile Information
+            Настройки профиля
         </template>
 
         <template #description>
-            Update your account's profile information and email address.
+            Обновление основной информации о пользователе.
         </template>
 
         <template #form>
@@ -96,7 +97,7 @@ const clearPhotoFileInput = () => {
                     @change="updatePhotoPreview"
                 >
 
-                <InputLabel for="photo" value="Photo" />
+                <InputLabel for="photo" value="Аватар" />
 
                 <!-- Current Profile Photo -->
                 <div v-show="! photoPreview" class="mt-2">
@@ -111,17 +112,17 @@ const clearPhotoFileInput = () => {
                     />
                 </div>
 
-                <SecondaryButton class="mt-2 mr-2" type="button" @click.prevent="selectNewPhoto">
-                    Select A New Photo
+                <SecondaryButton class="mt-2 mr-2 !text-blue-500 !font-bold border-blue-500 hover:!bg-blue-600 hover:!text-white" type="button" @click.prevent="selectNewPhoto">
+                    Загрузить аватар
                 </SecondaryButton>
 
                 <SecondaryButton
                     v-if="user.profile_photo_path"
                     type="button"
-                    class="mt-2"
+                    class="mt-2 !text-red-500 !font-bold border-red-500 hover:!bg-red-600 hover:!text-white"
                     @click.prevent="deletePhoto"
                 >
-                    Remove Photo
+                    Удалить аватар
                 </SecondaryButton>
 
                 <InputError :message="form.errors.photo" class="mt-2" />
@@ -129,7 +130,7 @@ const clearPhotoFileInput = () => {
 
             <!-- Name -->
             <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="name" value="Name" />
+                <InputLabel for="name" value="Отображаемое имя" />
                 <TextInput
                     id="name"
                     v-model="form.name"
@@ -140,9 +141,22 @@ const clearPhotoFileInput = () => {
                 <InputError :message="form.errors.name" class="mt-2" />
             </div>
 
+            <!-- About -->
+            <div class="col-span-6 sm:col-span-4">
+                <InputLabel for="about" value="О себе" />
+                <TextInput
+                    id="info"
+                    v-model="form.about"
+                    type="text"
+                    class="mt-1 block w-full"
+                    placeholder="Введите информацию о себе"
+                />
+                <InputError :message="form.errors.about" class="mt-2" />
+            </div>
+
             <!-- Email -->
             <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="email" value="Email" />
+                <InputLabel for="email" value="E-mail адрес" />
                 <TextInput
                     id="email"
                     v-model="form.email"
@@ -154,7 +168,7 @@ const clearPhotoFileInput = () => {
 
                 <div v-if="$page.props.jetstream.hasEmailVerification && user.email_verified_at === null">
                     <p class="text-sm mt-2">
-                        Your email address is unverified.
+                        Ваш адрес электронной почты не подтвержден.
 
                         <Link
                             :href="route('verification.send')"
@@ -163,12 +177,12 @@ const clearPhotoFileInput = () => {
                             class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             @click.prevent="sendEmailVerification"
                         >
-                            Click here to re-send the verification email.
+                            Нажмите здесь, чтобы повторно отправить электронное письмо с подтверждением.
                         </Link>
                     </p>
 
                     <div v-show="verificationLinkSent" class="mt-2 font-medium text-sm text-green-600">
-                        A new verification link has been sent to your email address.
+                        На ваш адрес электронной почты была отправлена новая ссылка для подтверждения.
                     </div>
                 </div>
             </div>
@@ -176,11 +190,11 @@ const clearPhotoFileInput = () => {
 
         <template #actions>
             <ActionMessage :on="form.recentlySuccessful" class="mr-3">
-                Saved.
+                Сохранено
             </ActionMessage>
 
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Save
+                Сохранить
             </PrimaryButton>
         </template>
     </FormSection>
