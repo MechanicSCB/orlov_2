@@ -1,36 +1,47 @@
 <script setup>
-import {router, useForm} from "@inertiajs/vue3";
+import {useForm} from "@inertiajs/vue3";
 import Avatar from "@/Layouts/Partials/Avatar.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Vote from "@/Pages/Posts/Partials/Vote.vue";
-import {inject} from "vue";
 
-let props = defineProps({comment:Object})
-let form = useForm({
-    comment: '',
-    parent_id: '',
-});
+defineProps({comment:Object})
 
-let visibleForm = inject('visibleForm');
-function submit() {
-    form.parent_id = props.comment.id;
-    form.post(route('posts.comments.store', router.page.props.post.id),{
-        preserveScroll: true,
-    });
-
-    form.comment = '';
-    visibleForm.value = null;
-}
-
-function toggleForm(){
-    if(visibleForm.value === form){
-        visibleForm.value = null;
-    }else{
-        visibleForm.value = form;
-    }
-}
 </script>
 
+<script>
+// TODO move to script setup
+export default {
+    data(){
+        return{
+            form: useForm({
+                comment: '',
+                parent_id: '',
+                visibility: false,
+            }),
+        }
+    },
+    methods: {
+        submit() {
+            this.$page.visibleForm = null; // to avoid "The object could not be cloned." Error
+            this.form.parent_id = this.comment.id;
+            this.form.post(route('posts.comments.store', this.$page.props.post.id),{
+                preserveScroll: true,
+            });
+
+            this.form.comment = '';
+            this.form.visibility = false;
+        },
+        toggleForm(){
+            if(this.$page.visibleForm && !this.form.visibility){
+                this.$page.visibleForm.visibility = false;
+            }
+
+            this.$page.visibleForm = this.form;
+            this.form.visibility = !this.form.visibility;
+        },
+    },
+}
+</script>
 <template>
     <div :id="'comment_' + comment.id" class="flex justify-between">
         <!-- Comment user -->
@@ -54,7 +65,7 @@ function toggleForm(){
     </button>
 
     <!-- Add Comment -->
-    <form v-if="visibleForm === form" class="my-4" @submit.prevent="submit">
+    <form v-if="form.visibility" class="my-4" @submit.prevent="submit">
         <div v-if="$page.props.auth.user">
             <p class="text-xs text-gray-500">Написать ответ</p>
             <textarea v-model="form.comment" name="comment" cols="30" rows="1"

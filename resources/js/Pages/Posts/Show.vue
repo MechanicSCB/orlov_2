@@ -5,6 +5,7 @@ import Avatar from "@/Layouts/Partials/Avatar.vue";
 import CommentsCount from "@/Pages/Posts/Partials/CommentsCount.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Vote from "@/Pages/Posts/Partials/Vote.vue";
+import {provide, ref} from "vue";
 
 let props = defineProps({
     post:Object,
@@ -13,6 +14,9 @@ let props = defineProps({
 let form = useForm({
     comment:'',
 });
+
+let visibleForm = ref(null);
+provide('visibleForm', visibleForm)
 
 function submit() {
     form.post(route('posts.comments.store', props.post.id),{
