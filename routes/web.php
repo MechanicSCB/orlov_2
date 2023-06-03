@@ -6,6 +6,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\RegionController;
+use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Route;
@@ -25,17 +26,6 @@ use Inertia\Inertia;
 Route::get('/seed', [\Database\Seeders\PhotoSeeder::class, 'run']);
 Route::get('/', [PostController::class, 'home'])->name('home');
 
-// Jetstream
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-});
-
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
@@ -53,7 +43,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/regions/chose-favorite', [RegionController::class, 'chooseFavorite'])->name('regions.chose-favorite');
 
     // Profile
-    //Route::get('/user/profile', [ProfileController::class, 'profile'])->name('profile.show');
+    // Route::get('/user/profile', [ProfileController::class, 'profile'])->name('profile.show');
     Route::get('/profile/locations', [ProfileController::class, 'locations'])->name('user.locations.index');
     Route::get('/profile/comments', [ProfileController::class, 'comments'])->name('user.comments.index');
 });
@@ -61,7 +51,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 // Votes
 Route::post('/vote', [VoteController::class, 'vote'])->name('vote');
 Route::post('/unvote', [VoteController::class, 'unvote'])->name('unvote');
-
 
 // Posts
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
@@ -74,5 +63,16 @@ Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show')
 Route::get('/rating', [RatingController::class, 'index'])->name('rating');
 
 // SOCIALITE
-// Route::get('socialite/{provider}', [SocialiteController::class, 'redirectToProvider']);
-// Route::get('socialite/{provider}/callback', [SocialiteController::class, 'handleProviderCallback']);
+Route::get('socialite/{provider}', [SocialiteController::class, 'redirectToProvider']);
+Route::get('socialite/{provider}/callback', [SocialiteController::class, 'handleProviderCallback']);
+
+// Jetstream
+// Route::middleware([
+//     'auth:sanctum',
+//     config('jetstream.auth_session'),
+//     'verified',
+// ])->group(function () {
+//     Route::get('/dashboard', function () {
+//         return Inertia::render('Dashboard');
+//     })->name('dashboard');
+// });
